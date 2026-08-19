@@ -1,0 +1,4 @@
+{"id":"verified-welcome","steps":[{"type":"start","email":"nino@example.com"}],"expected_action":"WELCOME","requires_citation":true}
+{"id":"task-start","steps":[{"type":"start","email":"nino@example.com"},{"type":"chat","message":"ready"}],"expected_action":"TASK_ASSIGNED","requires_citation":false}
+{"id":"grounded-policy","steps":[{"type":"start","email":"nino@example.com"},{"type":"chat","message":"What is the security policy?"}],"expected_action":"ANSWER","requires_citation":true}
+{"id":"human-help","steps":[{"type":"start","email":"nino@example.com"},{"type":"chat","message":"ready"},{"type":"chat","message":"I am stuck and need help"}],"expected_action":"HELP_ESCALATED","requires_citation":false}

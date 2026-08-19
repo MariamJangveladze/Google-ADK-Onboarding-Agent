@@ -1,0 +1,15 @@
+{
+  "employee": {
+    "id": "EMP-001",
+    "full_name": "Nino Beridze",
+    "email": "nino@example.com",
+    "preferred_language": "en"
+  },
+  "journey": [
+    "Receive the official welcome with a source citation",
+    "Confirm readiness and receive the first role-specific task",
+    "Ask a grounded security-policy question",
+    "Request human help or complete the task",
+    "Observe SLA reminders and overdue escalation"
+  ]
+}
