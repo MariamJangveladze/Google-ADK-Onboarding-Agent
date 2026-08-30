@@ -20,6 +20,8 @@ class Settings(BaseSettings):
     quiet_hours_start: int = Field(default=19, ge=0, le=23)
     quiet_hours_end: int = Field(default=10, ge=0, le=23)
     max_message_characters: int = Field(default=2000, ge=100, le=10000)
+    demo_api_token: str = ""
+    max_knowledge_file_bytes: int = Field(default=10_000_000, ge=100_000, le=50_000_000)
 
     database_url: str = ""
     slack_bot_token: str = ""
@@ -41,6 +43,7 @@ class Settings(BaseSettings):
             "google_application_credentials": self.google_application_credentials,
             "google_cloud_project": self.google_cloud_project,
             "drive_folder_id": self.drive_folder_id,
+            "demo_api_token": self.demo_api_token,
         }
         missing = [name for name, value in required.items() if not value]
         if self.runtime_mode == "live" and missing:

@@ -37,6 +37,7 @@ class SessionState(BaseModel):
 
 class AgentInput(BaseModel):
     message: str
+    employee_id: str
     employee_first_name: str
     language: Language
     current_task: Task | None = None

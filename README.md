@@ -119,6 +119,9 @@ platform. Run the Slack Socket Mode worker as a separate process. In a scaled de
 in-process scheduler ownership with one durable scheduled job and move the knowledge cache to a
 persistent vector index such as pgvector.
 
+The HTTP demo routes require `ONBOARDING_DEMO_API_TOKEN` as a bearer token.
+Keep them private behind enterprise authentication in any live environment.
+
 Before using employee data, establish an approved privacy notice, access model, retention schedule,
 human review policy, and controls for sentiment-derived data.
 
@@ -128,3 +131,8 @@ This repository is a cleaned portfolio evolution of an onboarding prototype that
 ADK, Gemini 2.0 Flash, Slack, PostgreSQL/Supabase, Google Drive retrieval, multilingual responses,
 task buttons, session tracking, and an SLA watchdog. The original local project and its credentials
 are not included or modified.
+
+## Usage and copyright
+
+Portfolio review only. No open-source license is granted. See [COPYRIGHT.md](COPYRIGHT.md)
+and report security concerns privately as described in [SECURITY.md](SECURITY.md).

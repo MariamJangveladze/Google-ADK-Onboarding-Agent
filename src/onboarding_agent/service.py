@@ -135,6 +135,7 @@ class OnboardingService:
         decision = await self.agent.respond(
             AgentInput(
                 message=message,
+                employee_id=employee.id,
                 employee_first_name=self._first_name(employee),
                 language=language,
                 current_task=state.current_task,

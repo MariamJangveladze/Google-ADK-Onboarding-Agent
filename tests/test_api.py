@@ -1,24 +1,32 @@
 from fastapi.testclient import TestClient
 
 from onboarding_agent.api import app
+from onboarding_agent.config import get_settings
+
+AUTH = {"Authorization": "Bearer test-token"}
 
 
 def test_complete_demo_journey(monkeypatch):
     monkeypatch.setenv("ONBOARDING_RUNTIME_MODE", "local")
+    monkeypatch.setenv("ONBOARDING_DEMO_API_TOKEN", "test-token")
+    get_settings.cache_clear()
     with TestClient(app) as client:
         welcome = client.post(
             "/demo/start",
             json={"slack_user_id": "U_DEMO", "verified_email": "nino@example.com"},
+            headers=AUTH,
         )
         task = client.post(
             "/demo/chat",
             json={"slack_user_id": "U_DEMO", "message": "ready"},
+            headers=AUTH,
         )
         policy = client.post(
             "/demo/chat",
             json={"slack_user_id": "U_DEMO", "message": "What is the security policy?"},
+            headers=AUTH,
         )
-        done = client.post("/demo/done", json={"slack_user_id": "U_DEMO"})
+        done = client.post("/demo/done", json={"slack_user_id": "U_DEMO"}, headers=AUTH)
 
     assert welcome.status_code == 200
     assert welcome.json()["action"] == "WELCOME"
@@ -33,10 +41,13 @@ def test_complete_demo_journey(monkeypatch):
 
 def test_unverified_identity_cannot_access_tasks(monkeypatch):
     monkeypatch.setenv("ONBOARDING_RUNTIME_MODE", "local")
+    monkeypatch.setenv("ONBOARDING_DEMO_API_TOKEN", "test-token")
+    get_settings.cache_clear()
     with TestClient(app) as client:
         response = client.post(
             "/demo/start",
             json={"slack_user_id": "U_ATTACKER", "verified_email": "unknown@example.com"},
+            headers=AUTH,
         )
     assert response.status_code == 200
     assert response.json()["action"] == "IDENTITY_REQUIRED"

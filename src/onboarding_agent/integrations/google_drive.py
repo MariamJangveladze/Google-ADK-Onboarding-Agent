@@ -36,8 +36,13 @@ class GoogleDriveKnowledgeBase:
         return [text[index : index + size] for index in range(0, len(text), step)]
 
     @staticmethod
-    def _docx_text(content: bytes) -> str:
+    def _docx_text(content: bytes, max_bytes: int) -> str:
+        if len(content) > max_bytes:
+            raise ValueError("Drive document exceeds the configured size limit")
         with zipfile.ZipFile(io.BytesIO(content)) as archive:
+            total_size = sum(item.file_size for item in archive.infolist())
+            if total_size > max_bytes:
+                raise ValueError("Expanded Drive document exceeds the configured size limit")
             root = ElementTree.fromstring(archive.read("word/document.xml"))
         namespace = {"w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main"}
         paragraphs = []
@@ -83,19 +88,23 @@ class GoogleDriveKnowledgeBase:
             TextEmbeddingModel.from_pretrained("gemini-embedding-001"),
         )
 
-    @staticmethod
-    def _read_file(drive, metadata: dict) -> str:
+    def _read_file(self, drive, metadata: dict) -> str:
         mime = metadata["mimeType"]
         file_id = metadata["id"]
         if mime == "application/vnd.google-apps.document":
             content = drive.files().export(fileId=file_id, mimeType="text/plain").execute()
+            if len(content) > self.settings.max_knowledge_file_bytes:
+                raise ValueError("Drive document exceeds the configured size limit")
             return content.decode("utf-8", errors="ignore")
         if mime == "text/plain":
             content = drive.files().get_media(fileId=file_id).execute()
+            if len(content) > self.settings.max_knowledge_file_bytes:
+                raise ValueError("Drive document exceeds the configured size limit")
             return content.decode("utf-8", errors="ignore")
         if mime == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-            return GoogleDriveKnowledgeBase._docx_text(
-                drive.files().get_media(fileId=file_id).execute()
+            return self._docx_text(
+                drive.files().get_media(fileId=file_id).execute(),
+                self.settings.max_knowledge_file_bytes,
             )
         return ""
 

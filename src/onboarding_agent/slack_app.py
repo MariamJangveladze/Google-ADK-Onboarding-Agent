@@ -27,6 +27,8 @@ async def run() -> None:
     async def handle_message(event, say):
         if event.get("bot_id") or not event.get("text"):
             return
+        if event.get("channel_type") != "im":
+            return
         user_id = event["user"]
         async with lock_for(user_id):
             employee = await container.service.repository.get_employee_by_slack(user_id)

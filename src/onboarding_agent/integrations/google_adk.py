@@ -42,8 +42,8 @@ class GoogleAdkConversationAgent:
             parts=[types.Part(text=json.dumps(payload.model_dump(mode="json")))],
         )
         events = self.runner.run(
-            user_id=payload.employee_first_name,
-            session_id=payload.employee_first_name,
+            user_id=payload.employee_id,
+            session_id=f"onboarding-{payload.employee_id}",
             new_message=message,
         )
         for event in events:
