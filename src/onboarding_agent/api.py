@@ -3,7 +3,6 @@
 import logging
 import secrets
 from contextlib import asynccontextmanager
-from datetime import datetime
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
 
@@ -101,4 +100,5 @@ async def help_request(payload: ActionRequest, request: Request) -> BotResponse:
 
 @app.post("/operations/sla-sweep", tags=["operations"], dependencies=[Depends(_require_demo_token)])
 async def sla_sweep(request: Request) -> dict[str, int]:
-    return await _container(request).service.run_sla_sweep(datetime.now().astimezone())
+    # The service owns time so local demos and tests use the same injected clock.
+    return await _container(request).service.run_sla_sweep()

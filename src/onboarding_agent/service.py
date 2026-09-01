@@ -39,6 +39,8 @@ class OnboardingService:
         current = (now or self.clock()).astimezone(timezone_value)
         start = self.settings.quiet_hours_start
         end = self.settings.quiet_hours_end
+        if start < end:
+            return start <= current.hour < end
         return current.hour >= start or current.hour < end
 
     @staticmethod

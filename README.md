@@ -52,9 +52,15 @@ Read the [case study](docs/CASE_STUDY.md), [architecture decisions](docs/ARCHITE
 Prerequisites: Python 3.11+ and [uv](https://docs.astral.sh/uv/).
 
 ```bash
+cp .env.example .env
+# Set ONBOARDING_DEMO_API_TOKEN to your own local test value.
 uv sync --extra dev
 uv run uvicorn onboarding_agent.api:app --reload
 ```
+
+Testing the protected HTTP routes requires the reviewer's own API token in
+`.env` and the matching `Authorization: Bearer ...` header. This repository
+does not include API keys, credentials, or reusable secret values.
 
 Open `http://127.0.0.1:8000/docs`. The default local mode uses fictional employee data, a
 deterministic agent, an in-memory repository, and a fixed daytime clock. It does not require cloud
@@ -77,8 +83,11 @@ uv run pytest -q
 uv run onboarding-eval
 ```
 
-The evaluation suite checks verified welcome delivery, task assignment, grounded citations, and
-human escalation.
+The included evaluation suite checks the deterministic local workflow: verified
+welcome delivery, task assignment, grounded citations, and human escalation.
+It does not claim to measure Gemini model quality. Testing the live ADK/Gemini
+adapter requires the reviewer's own Google API key and approved cloud access;
+no API key is included here.
 
 ## Enable live integrations
 
