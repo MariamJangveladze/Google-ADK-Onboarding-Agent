@@ -51,3 +51,20 @@ async def test_quiet_hours_prevent_task_assignment():
 
     assert response.action == "QUIET_HOURS"
     assert not container.repository.active
+
+
+def test_same_day_quiet_hours_do_not_disable_the_entire_day():
+    settings = Settings(quiet_hours_start=9, quiet_hours_end=17)
+    container = build_container(settings)
+
+    assert container.service._is_quiet_hours(
+        "UTC", datetime(2026, 1, 15, 12, 0, tzinfo=UTC)
+    )
+    assert not container.service._is_quiet_hours(
+        "UTC", datetime(2026, 1, 15, 18, 0, tzinfo=UTC)
+    )
+
+
+def test_equal_quiet_hour_boundaries_are_rejected():
+    with pytest.raises(ValueError, match="start and end must be different"):
+        Settings(quiet_hours_start=9, quiet_hours_end=9)

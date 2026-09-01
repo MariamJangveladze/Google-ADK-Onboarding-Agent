@@ -3,7 +3,7 @@
 from functools import lru_cache
 from typing import Literal
 
-from pydantic import Field
+from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -33,6 +33,12 @@ class Settings(BaseSettings):
     google_cloud_location: str = "us-central1"
     drive_folder_id: str = ""
     knowledge_cache_seconds: int = Field(default=900, ge=60, le=86400)
+
+    @model_validator(mode="after")
+    def validate_quiet_hours(self) -> "Settings":
+        if self.quiet_hours_start == self.quiet_hours_end:
+            raise ValueError("quiet-hours start and end must be different")
+        return self
 
     def validate_live(self) -> None:
         required = {
